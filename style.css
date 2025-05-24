@@ -1,0 +1,45 @@
+body {
+    background-image: image-set(url('https://th.bing.com/th/id/R.de823349230d82a501c780c0395a88ec?rik=O7M94bDQUWhrzQ&riu=http%3a%2f%2forig15.deviantart.net%2fcfa4%2ff%2f2015%2f002%2f3%2f3%2fpixel_space_by_bulldoggenliebchen-d775ufv.png&ehk=9CdVE0BUaD0yDJ8DkMvRosxvfE5BhmcUnNGWTN8eTPQ%3d&risl=&pid=ImgRaw&r=0'));
+    text-align: center;
+    color: #ffffff;
+}
+
+.h01 {
+    color: rgb(253, 253, 253);
+    font-size: 40px;
+}
+
+.para {
+    font-size: 20px;
+    text-align: center;
+    color: rgb(253, 253, 253);
+}
+
+.entrada {
+    border-radius: 15px;
+    font-size: 30px;
+
+}
+
+.btc {
+    cursor: pointer;
+    font-size: 20px;
+    border-radius: 15px;
+}
+.lincon input,
+lincon button {
+    color: tomato;
+    text-align: center;
+}
+ .imgResultado { 
+    width: 20px;
+ } 
+ .morango { 
+    color: rgb(253, 253, 253);
+    width: 40px;
+ }
+
+.batata {
+    color: rgb(253, 253, 253);
+    width: 40px;
+}

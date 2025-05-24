@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Estoque</title>
+    <style>
+        body{font-family:Arial,sans-serif;margin:0;padding:20px;background:#f5f5f5}
+        .container{max-width:800px;margin:0 auto}
+        h1{text-align:center;color:#333}
+        section{background:#fff;border-radius:8px;padding:20px;margin-bottom:20px;box-shadow:0 2px 5px rgba(0,0,0,0.1)}
+        input{padding:8px;border:1px solid #ddd;border-radius:4px;margin-right:10px}
+        button{padding:8px 15px;background:#3498db;color:#fff;border:none;border-radius:4px;cursor:pointer}
+        button:hover{background:#2980b9}
+        #productList{list-style:none;padding:0}
+        #productList li{background:#fff;border:1px solid #eee;padding:10px;margin-bottom:8px;border-radius:4px;display:flex;justify-content:space-between}
+        .product-actions{display:flex;gap:8px}
+        .search-box{display:flex;margin-bottom:15px}
+        @media (max-width:600px){.search-box,form{flex-direction:column}input{margin-bottom:10px}}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Controle de Estoque</h1>
+        
+        <section>
+            <h2>Cadastrar Produto</h2>
+            <form id="productForm">
+                <input type="text" id="productName" placeholder="Nome do Produto" required>
+                <input type="number" id="productQuantity" placeholder="Quantidade" min="1" required>
+                <button type="submit">Cadastrar</button>
+            </form>
+        </section>
+        
+        <section>
+            <h2>Buscar Produto</h2>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Nome do produto">
+                <button id="searchBtn">Buscar</button>
+            </div>
+            <div id="searchResults"></div>
+        </section>
+        
+        <section>
+            <h2>Lista de Produtos</h2>
+            <ul id="productList"></ul>
+        </section>
+    </div>
+
+    <script>
+        let produtos = JSON.parse(localStorage.getItem('estoque')) || [];
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            mostrarProdutos();
+            document.getElementById('productForm').addEventListener('submit', cadastrarProduto);
+            document.getElementById('searchBtn').addEventListener('click', buscarProduto);
+        });
+        
+        function cadastrarProduto(e) {
+            e.preventDefault();
+            const nome = document.getElementById('productName').value.trim();
+            const quantidade = parseInt(document.getElementById('productQuantity').value);
+            
+            if(nome && !isNaN(quantidade) && quantidade > 0) {
+                const produtoExistente = produtos.find(p => p.nome.toLowerCase() === nome.toLowerCase());
+                
+                if(produtoExistente) {
+                    produtoExistente.quantidade += quantidade;
+                } else {
+                    produtos.push({nome, quantidade});
+                }
+                
+                salvarLocalStorage();
+                mostrarProdutos();
+                document.getElementById('productForm').reset();
+            }
+        }
+        
+        function buscarProduto() {
+            const termo = document.getElementById('searchInput').value.trim().toLowerCase();
+            const resultados = document.getElementById('searchResults');
+            resultados.innerHTML = '';
+            
+            if(!termo) return;
+            
+            const encontrados = produtos.filter(p => p.nome.toLowerCase().includes(termo));
+            
+            if(encontrados.length === 0) {
+                resultados.innerHTML = '<p>Nenhum produto encontrado</p>';
+                return;
+            }
+            
+            encontrados.forEach(produto => {
+                const div = document.createElement('div');
+                div.innerHTML = `
+                    <p><strong>${produto.nome}</strong>: ${produto.quantidade} unidades</p>
+                    <div>
+                        <input type="number" id="ajuste-${produto.nome}" min="1" value="1">
+                        <button onclick="ajustarEstoque('${produto.nome}', 'adicionar')">Adicionar</button>
+                        <button onclick="ajustarEstoque('${produto.nome}', 'remover')">Remover</button>
+                    </div>
+                `;
+                resultados.appendChild(div);
+            });
+        }
+        
+        function mostrarProdutos() {
+            const lista = document.getElementById('productList');
+            lista.innerHTML = '';
+            
+            if(produtos.length === 0) {
+                lista.innerHTML = '<li>Nenhum produto cadastrado</li>';
+                return;
+            }
+            
+            produtos.forEach(produto => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <span>${produto.nome}: ${produto.quantidade} unidades</span>
+                    <div class="product-actions">
+                        <input type="number" id="lista-ajuste-${produto.nome}" min="1" value="1">
+                        <button onclick="ajustarEstoque('${produto.nome}', 'adicionar')">+</button>
+                        <button onclick="ajustarEstoque('${produto.nome}', 'remover')">-</button>
+                    </div>
+                `;
+                lista.appendChild(li);
+            });
+        }
+        
+        function ajustarEstoque(nome, acao) {
+            const produto = produtos.find(p => p.nome === nome);
+            const inputId = acao === 'adicionar' ? `ajuste-${nome}` : `lista-ajuste-${nome}`;
+            const quantidade = parseInt(document.getElementById(inputId).value);
+            
+            if(!produto || isNaN(quantidade)) return;
+            
+            if(acao === 'adicionar') {
+                produto.quantidade += quantidade;
+            } else {
+                if(produto.quantidade >= quantidade) {
+                    produto.quantidade -= quantidade;
+                } else {
+                    alert('Quantidade insuficiente em estoque!');
+                    return;
+                }
+            }
+            
+            salvarLocalStorage();
+            mostrarProdutos();
+            buscarProduto();
+        }
+        
+        function salvarLocalStorage() {
+            localStorage.setItem('estoque', JSON.stringify(produtos));
+        }
+    </script>
+</body>
+</html>

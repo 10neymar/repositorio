@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+      <head> 
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+        <title>exercio 1</title>
+            <style>
+                body {
+                    text-align: center;
+
+                }
+                button {
+                    cursor: pointer;
+                }
+
+            </style>
+    </head>
+      
+       <body>
+        <h1>jogo do número secreto</h1>
+        <P> Bem vindo ao jogo do número secreto, digite um número de um a 1 a 10 no campo abaixo</P>
+        <input type="number">
+        <button onclick="bomDia()">Confirmar</button>
+
+        <script>
+            function bomDia() {
+                
+                let idadeDoUsuario = prompt("digite sua idade: ");
+
+                if (idadeDoUsuario >= 18) {
+                    console.log("você está apto a tirar a carteira");
+                    alert("Você esta apto a tirar a carteira");
+                } else {
+                    console.log("Você não está apto a tirar a carteira");
+                    alert("Você não está apto a tirar a carteira");
+                }
+                }
+
+            
+        </script>
+      </body>
+</html>

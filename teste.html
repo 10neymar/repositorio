@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, inicital-scale=1.0">
+
+        
+        <tittle>Controle de Estoque</tittle>
+        <link rel="stylesheet" href="style.css">
+        <style>
+            body {
+                text-align: center;
+
+            }
+            button {
+                cursor: pointer;
+            }
+
+        </style>
+
+    </head>
+
+    <body>
+        <div class="container">
+            <h1>Controle de Estoque</h1>
+
+            <section class="form-section">
+                <h2>Cadastrar Produto</h2>
+                <form id="productForm">
+                    <input type="text" id="productName" placeHolder="Nome do Produto" required>
+                    <input type="number" id="productQuantity" placeholder="Quantidade" required min="1">
+                    <button type="submit">Cadastrar</button>
+                </form>
+             </section>
+            
+             <section class="list-section">
+                <h2>Lista de Produtos</h2>
+                <ul id="productlist"></ul>
+             </section>
+
+             <section class="adjust-section">
+                <h2>Adicionar ou remover estoque</h2>
+                <input type="text" id="searchProduct" placeholder="Buscar Produto">
+                <input type="number" id="adjustQuantity" placeholder="Quantidade" min="1">
+                <button onclick="adjustStock('add')">Adicionar</button>
+                <button onclick="adjustStock('remove')">Remover</button>
+             </section>
+        </div>
+        <script src="script.js">
+            let product = [];
+            document.getElementById('productForm').addEventListener('submit', function(event) { 
+                   event.preventDefault();
+                       const name = document.getElementById('productName').value;
+                           const quantity = parseInt(document.getElementById('productQuantity').value);
+                               const existingProduct = products.find(product => product.name === name);
+                                   if (existingProduct) {
+                 existingProduct.quantity += quantity;
+             } else {
+         products.push({ name, quantity });
+                                                        }
+            document.getElementById('productForm').reset();
+                displayProducts(); });
+             function displayProducts() {
+                    const productList = document.getElementById('productList');
+                        productList.innerHTML = '';
+                            products.forEach(product => {
+                                const li = document.createElement('li');
+                                    li.textContent = `${product.name}: ${product.quantity}`;        productList.appendChild(li);    });} adjustStock(action) {
+            const name = document.getElementById('searchProduct').value;    const quantity = parseInt(document.getElementById('adjustQuantity').value);    const product = products.find(product => product.name === name);
+                if (product) {
+                        if (action === 'add') {
+                            product.quantity += quantity;       
+                         } else if (action === 'remove') {
+                            if (product.quantity >= quantity) {                product.quantity -= quantity;            } else {                alert('Quantidade insuficiente para remoção.');            }        }    } else {        alert('Produto não encontrado.');    }    displayProducts();}
+        </script>
+    </body>
+
+
+</html>
